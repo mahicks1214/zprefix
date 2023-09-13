@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const bcrypt = require('bcrypt');
 const port = 8081;
 const knex = require('knex')(require('../knexfile.js')["development"])
 
@@ -62,6 +63,48 @@ app.delete('/users/:id', async (req, res) => {
     }
 });
 
+// Register a new user
+app.post('/register', async (req, res) => {
+    try {
+      const { first_name, last_name,username, password } = req.body;
+      const hashedPassword = await bcrypt.hash(password, 10); // Hash the password
+  
+      // Store user information in the database
+      await knex('user_profile').insert({ first_name, last_name,username, password: hashedPassword });
+      res.status(201).json('User registered successfully.');
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  });
+  
+  // Login
+  app.post('/login', async (req, res) => {
+    try {
+      const { username, password } = req.body;
+  
+      // Retrieve user from the database
+      const user = await knex('user_profile').where({ username }).first();
+  
+      if (!user) {
+        return res.status(401).json('Authentication failed.');
+      }
+  
+      // Compare the provided password with the hashed password
+      const passwordMatch = await bcrypt.compare(password, user.password);
+  
+      if (!passwordMatch) {
+        return res.status(401).json('Authentication failed.');
+      }
+  
+      // Create a session/token and send it back to the client
+      // You can use JWT or other authentication mechanisms here
+      const authToken = 'generate_your_auth_token_here';
+  
+      res.status(200).json({ authToken });
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  })
 
 //GET Auction Inventory PAGE 
 app.get('/inventory', (req, res) => {
