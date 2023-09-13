@@ -28,7 +28,7 @@ function LoginPage() {
         
         console.log('Login successful.');
         
-        navigate('http://localhost:8081/login');
+        navigate('/profile', {state:{ user: loginData }});;
       } else {
         
         console.error('Login failed.');
