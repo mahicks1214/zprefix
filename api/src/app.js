@@ -140,7 +140,7 @@ app.post('/login', async (req, res) => {
 });
 
 //Got it to pass the postman test
-app.get('/profile', verifyToken, (req, res) => {
+app.get('/Profile', verifyToken, (req, res) => {
   knex('user_profile')
     .where('username', req.username)
     .first()
@@ -156,8 +156,6 @@ app.get('/profile', verifyToken, (req, res) => {
       res.status(500).json('Error fetching user data');
     });
 });
-
-
 
 // THIS WORKS!! 
 // app.get('/profile', verifyToken, (req, res) => {

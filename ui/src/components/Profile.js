@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function Profile({ token, userData }) {
   const navigate = useNavigate();
+  const { userId } = useParams();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -15,9 +16,9 @@ function Profile({ token, userData }) {
     }
 
     if (token && userData) {
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(userData));
-        console.log('Token and user data stored in localStorage:', token, userData);
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      console.log('Token and user data stored in localStorage:', token, userData);
     }
 
     const userString = localStorage.getItem('user');
@@ -54,6 +55,7 @@ function Profile({ token, userData }) {
     <div>
       <h1>Profile Page</h1>
       <p>Welcome {user.first_name}, {user.username}!</p>
+      <p>User ID: {userId}</p>
       <button onClick={handleLogout}>Logout</button>
     </div>
   );

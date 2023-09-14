@@ -17,9 +17,9 @@ function App() {
     // Retrieve the token and user data from local storage
     const storedToken = localStorage.getItem('token');
     const storedUserData = localStorage.getItem('userData');
-  
+
     console.log('Token and user data received:', storedToken, storedUserData);
-  
+
     if (storedToken && storedUserData) {
       setToken(storedToken);
       setUserData(JSON.parse(storedUserData));
@@ -32,26 +32,32 @@ function App() {
       localStorage.setItem('token', token);
       localStorage.setItem('userData', JSON.stringify(userData));
     }
-  
+
     console.log('Token and user data stored in localStorage:', token, userData);
     console.log('User data in localStorage:', localStorage.getItem('userData'));
   }, [token, userData]);
+
   return (
-    <InventoryProvider value={{ inventory, setInventory }}>
-      <div>        
+    <Router>
+      <InventoryProvider value={{ inventory, setInventory }}>
+        <div>
           <Navbar />
           <Container>
             <Box mt={4}>
               <Routes>
+                {token && userData && <Route path="/Profile/:userId" element={<Profile token={token} userData={userData} />} />
+                }
+                {token && userData && <Route path="/Profile/:username" element={<Profile token={token} userData={userData} />} />}
+
                 <Route path="/" element={<Mainpage />} />
                 <Route path="/Register" element={<RegisterPage />} />
                 <Route path="/Login" element={<LoginPage />} />
-                {token && userData ? (<Route path="/Profile" element={<Profile token={token} userData={userData} />} />) : null}
               </Routes>
             </Box>
           </Container>
-      </div>
-    </InventoryProvider>
+        </div>
+      </InventoryProvider>
+    </Router>
   );
 }
 

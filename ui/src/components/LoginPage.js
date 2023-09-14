@@ -38,7 +38,7 @@ function LoginPage() {
         }
 
         console.log('Login successful.');
-        navigate('/profile');
+        navigate('/Profile');
       } else {
         console.error('Login failed.');
       }
