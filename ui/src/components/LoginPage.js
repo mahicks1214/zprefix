@@ -25,17 +25,19 @@ function LoginPage() {
       });
 
       if (response.status === 200) {
-        const { token, user } = await response.json();
-        console.log('Token and user data received:', token, user);
+        const responseData = await response.json();
+        console.log('API response:', responseData);
 
+        const token = responseData.authToken;
+        console.log('Token received:', token);
 
-        // Store the user data in localStorage
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-        console.log('Token and user data stored in localStorage:', token, user);
-        console.log('User data in localStorage:', localStorage.getItem('user'));
+        // Check if token is not undefined or null before storing in localStorage
+        if (token) {
+          localStorage.setItem('token', token);
+          console.log('Token stored in localStorage:', token);
+        }
+
         console.log('Login successful.');
-        
         navigate('/profile');
       } else {
         console.error('Login failed.');

@@ -1,29 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Profile() {
+function Profile({ token, userData }) {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
 
-  const userString = localStorage.getItem('user');
-  console.log('User data retrieved from localStorage:', userString);
+  useEffect(() => {
+    console.log('Token and user data received:', token, userData);
 
-  if (!userString) {
-    console.error('User data not found in localStorage.');
-    navigate('/login');
-    return null;
-  }
+    if (!token || !userData) {
+      console.error('Token or user data not received.');
+      navigate('/login');
+      return;
+    }
 
-  let user;
-  try {
-    user = JSON.parse(userString);
-    console.log('User data after parsing:', user);
-  } catch (error) {
-    console.error('Error parsing user data:', error);
-    navigate('/login');
-    return null;
-  }
+    if (token && userData) {
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(userData));
+        console.log('Token and user data stored in localStorage:', token, userData);
+    }
 
-  const { first_name, username } = user;
+    const userString = localStorage.getItem('user');
+    console.log('User data retrieved from localStorage:', userString);
+
+    if (!userString) {
+      console.error('User data not found in localStorage.');
+      navigate('/login');
+      return;
+    }
+
+    let parsedUser;
+    try {
+      parsedUser = JSON.parse(userString);
+      console.log('User data after parsing:', parsedUser);
+      setUser(parsedUser);
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      navigate('/login');
+    }
+  }, [navigate, token, userData]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -31,10 +46,14 @@ function Profile() {
     navigate('/login');
   };
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <div>
       <h1>Profile Page</h1>
-      <p>Welcome {first_name}, {username}!</p>
+      <p>Welcome {user.first_name}, {user.username}!</p>
       <button onClick={handleLogout}>Logout</button>
     </div>
   );

@@ -28,8 +28,12 @@ function RegisterPage() {
             });
 
             if (response.status === 201) {
-
                 console.log('User registered successfully.');
+
+                if (userData) {
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    console.log('User data stored in localStorage:', userData);
+                }
 
                 navigate('http://localhost:8081/register');
             } else {

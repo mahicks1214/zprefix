@@ -139,6 +139,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
+//Got it to pass the postman test
 app.get('/profile', verifyToken, (req, res) => {
   knex('user_profile')
     .where('username', req.username)
